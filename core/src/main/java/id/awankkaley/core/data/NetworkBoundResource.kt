@@ -1,6 +1,5 @@
 package id.awankkaley.core.data
 
-import android.util.Log
 import id.awankkaley.core.data.remote.network.ApiResponse
 import kotlinx.coroutines.flow.*
 
