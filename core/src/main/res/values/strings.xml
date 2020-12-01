@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Movie Catalogue</string>
+    <string name="image_poster">Image Poster</string>
+    <string name="something_wrong">Something Wrong</string>
+    <string name="overview">Overview</string>
+    <string name="backdrop">Backdrop</string>
+    <string name="release">Release</string>
+    <string name="popularity">Popularity</string>
+    <string name="vote">Vote</string>
+    <string name="search">Search</string>
+    <string name="home">Home</string>
+    <string name="favorite">Favorite</string>
+    <string name="empty_data">Empty Data</string>
+    <string name="title_favorite">Favorite</string>
+</resources>

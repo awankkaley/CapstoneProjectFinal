@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="id.awankkaley.capstoneproject.home.HomeFragment"
+        android:label="Home">
+        <action
+            android:id="@+id/toDetailFragment"
+            app:destination="@id/detailFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_searchFragment"
+            app:destination="@id/searchFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_favFragment"
+            app:destination="@id/favFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="id.awankkaley.capstoneproject.detail.DetailFragment"
+        android:label="Detail"
+        tools:layout="@layout/fragment_detail"/>
+    <fragment
+        android:id="@+id/searchFragment"
+        android:name="id.awankkaley.capstoneproject.search.SearchFragment"
+        android:label="Search"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/favFragment"
+        android:name="id.awankkaley.favorite.FavFragment"
+        android:label="Favorite"
+        tools:layout="@layout/fragment_fav" />
+
+
+</navigation>
