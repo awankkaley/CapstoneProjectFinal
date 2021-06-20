@@ -5,8 +5,8 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "popular")
-data class PopularEntity (
+@Entity(tableName = "favorite")
+data class FavoriteEntity(
 
     @ColumnInfo(name = "overview")
     val overview: String? = null,
@@ -52,4 +52,4 @@ data class PopularEntity (
     @ColumnInfo(name = "voteCount")
     val voteCount: Int? = null
 
-)
+    )

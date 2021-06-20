@@ -1,6 +1,7 @@
 package id.awankkaley.core.data
 
 
+import android.util.Log
 import id.awankkaley.core.data.local.LocalDataSource
 import id.awankkaley.core.data.remote.RemoteDataSource
 import id.awankkaley.core.data.remote.network.ApiResponse
@@ -70,8 +71,20 @@ class PopularRepository(
         }
     }
 
+
+    override fun isFavorite(id: String): Flow<Boolean> {
+        return flow {
+            val result = localDataSource.isFavorite(id)
+            result.collect {
+                if (it != null) {
+                    emit(true)
+                }
+            }
+        }
+    }
+
     override fun setFavoritePopular(popular: Popular, state: Boolean) {
-        val popularEntity = DataMapper.mapDomainToEntity(popular)
+        val popularEntity = DataMapper.mapDomainToFavEntity(popular)
         appExecutors.diskIO().execute { localDataSource.setFavoritePopular(popularEntity, state) }
     }
 }

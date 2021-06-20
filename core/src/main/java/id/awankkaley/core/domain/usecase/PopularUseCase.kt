@@ -10,4 +10,5 @@ interface PopularUseCase {
     fun searchMovies(query: String): Flow<Resource<List<Popular>>>
     fun getFavoritePopular(): Flow<List<Popular>>
     fun setFavoritePopular(popular: Popular, state: Boolean)
+    fun isFavorite(id: String): Flow<Boolean>
 }

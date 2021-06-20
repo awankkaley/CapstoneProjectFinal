@@ -9,9 +9,12 @@ interface IPopularRepository {
 
     fun getAllPopular(): Flow<Resource<List<Popular>>>
 
-     fun searchMovies(query:String): Flow<Resource<List<Popular>>>
+    fun searchMovies(query: String): Flow<Resource<List<Popular>>>
 
     fun getFavoritePopular(): Flow<List<Popular>>
+
+    fun isFavorite(id: String): Flow<Boolean>
+
 
     fun setFavoritePopular(popular: Popular, state: Boolean)
 

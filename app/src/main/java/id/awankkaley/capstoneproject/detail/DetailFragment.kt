@@ -2,6 +2,7 @@ package id.awankkaley.capstoneproject.detail
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,12 +44,19 @@ class DetailFragment : Fragment() {
         binding.tvDetailVote.text = "${data?.voteAverage.toString()}/10.0"
         binding.tvDetailRelease.text = Util.convertDate(data?.releaseDate)
 
-        var statusFavorite = data?.isFavorite
-        setStatusFavorite(statusFavorite!!)
+        var statusFavorite = false
+
+        detailViewModel.isFavorite(data?.id.toString())
+            .observe(viewLifecycleOwner) { result ->
+                statusFavorite = true
+                setStatusFavorite(statusFavorite)
+            }
+
+        setStatusFavorite(statusFavorite)
         binding.btnFav.onClick {
-            statusFavorite = !statusFavorite!!
-            data?.let { it1 -> detailViewModel.setFavorite(it1, statusFavorite!!) }
-            setStatusFavorite(statusFavorite!!)
+            statusFavorite = !statusFavorite
+            data?.let { it1 -> detailViewModel.setFavorite(it1, statusFavorite) }
+            setStatusFavorite(statusFavorite)
         }
 
         return binding.root
@@ -71,6 +79,7 @@ class DetailFragment : Fragment() {
             })
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

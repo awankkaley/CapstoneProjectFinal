@@ -1,5 +1,6 @@
 package id.awankkaley.core.utils
 
+import id.awankkaley.core.data.local.FavoriteEntity
 import id.awankkaley.core.data.local.PopularEntity
 import id.awankkaley.core.data.remote.response.PopularItem
 import id.awankkaley.core.domain.model.Popular
@@ -22,8 +23,7 @@ object DataMapper {
                 voteAverage = it.voteAverage,
                 id = it.id,
                 adult = it.adult,
-                voteCount = it.voteCount,
-                isFavorite = false
+                voteCount = it.voteCount
             )
             popularList.add(popular)
         }
@@ -46,8 +46,7 @@ object DataMapper {
                 voteAverage = it.voteAverage,
                 id = it.id,
                 adult = it.adult,
-                voteCount = it.voteCount,
-                isFavorite = it.isFavorite
+                voteCount = it.voteCount
             )
         }
 
@@ -66,9 +65,25 @@ object DataMapper {
         voteAverage = it.voteAverage,
         id = it.id,
         adult = it.adult,
-        voteCount = it.voteCount,
-        isFavorite = it.isFavorite
+        voteCount = it.voteCount
     )
+    fun mapDomainToFavEntity(it: Popular) = FavoriteEntity(
+        overview = it.overview,
+        originalLanguage = it.originalLanguage,
+        originalTitle = it.originalTitle,
+        video = it.video,
+        title = it.title,
+        genreIds = it.genreIds,
+        posterPath = it.posterPath,
+        backdropPath = it.backdropPath,
+        releaseDate = it.releaseDate,
+        popularity = it.popularity,
+        voteAverage = it.voteAverage,
+        id = it.id,
+        adult = it.adult,
+        voteCount = it.voteCount
+    )
+
 
     fun mapResponseToDomain(input: List<PopularItem>): List<Popular> =
         input.map {
