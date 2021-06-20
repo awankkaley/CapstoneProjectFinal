@@ -12,7 +12,8 @@ import kotlinx.coroutines.flow.*
 class SearchViewModel(popularUseCase: PopularUseCase) : ViewModel() {
     @FlowPreview
     @ExperimentalCoroutinesApi
-     val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
+    val queryChannel = BroadcastChannel<String>(Channel.CONFLATED)
+
     @ExperimentalCoroutinesApi
     @FlowPreview
     val searchResult = queryChannel.asFlow()

@@ -11,4 +11,11 @@ interface ApiService {
         @Query("api_key") string: String
     ): PopularListResponse
 
+    @GET(Util.search)
+    suspend fun searchMovies(
+        @Query("api_key") key: String,
+        @Query("query") search: String
+
+    ): PopularListResponse
+
 }

@@ -16,6 +16,7 @@ import id.awankkaley.core.ui.PopularAdapter
 import id.awankkaley.capstoneproject.databinding.FragmentSearchBinding
 import id.awankkaley.capstoneproject.util.gone
 import id.awankkaley.capstoneproject.util.visible
+import id.awankkaley.core.data.Resource
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -52,16 +53,22 @@ class SearchFragment : Fragment() {
             }
 
             homeViewModel.searchResult.observe(viewLifecycleOwner) { popular ->
-                val data = mutableListOf<Popular>()
-                popular.map {
-                    data.add(it)
+                if (popular != null) {
+                    when (popular) {
+                        is Resource.Loading -> {
+                            binding.tvEmptySearch.visible()
+                        }
+                        is Resource.Success -> {
+                            binding.tvEmptySearch.gone()
+                            searchAdapter.notifyDataSetChanged()
+                            searchAdapter.setData(popular.data)
+                        }
+                        is Resource.Error -> {
+                            binding.tvEmptySearch.visible()
+                        }
+                    }
                 }
-                searchAdapter.notifyDataSetChanged()
-                searchAdapter.setData(data)
-                if (data.isEmpty())
-                    binding.tvEmptySearch.visible()
-                else
-                    binding.tvEmptySearch.gone()
+
 
             }
             with(binding.rvMovies)

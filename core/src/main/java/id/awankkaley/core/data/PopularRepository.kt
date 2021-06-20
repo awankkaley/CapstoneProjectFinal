@@ -9,7 +9,10 @@ import id.awankkaley.core.domain.model.Popular
 import id.awankkaley.core.domain.repository.IPopularRepository
 import id.awankkaley.core.utils.AppExecutors
 import id.awankkaley.core.utils.DataMapper
+import kotlinx.coroutines.InternalCoroutinesApi
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 
 class PopularRepository(
@@ -38,9 +41,25 @@ class PopularRepository(
             }
         }.asFlow()
 
-    override fun searchMovies(query: String): Flow<List<Popular>> {
-        return localDataSource.searchMoviews(query).map {
-            DataMapper.mapEntitiesToDomain(it)
+    override fun searchMovies(query: String): Flow<Resource<List<Popular>>> {
+        return flow {
+            emit(Resource.Loading())
+            val apiResponse = remoteDataSource.searchMovies(query)
+            apiResponse.collect {
+                when (it) {
+                    is ApiResponse.Success -> {
+                        val data = DataMapper.mapResponseToDomain(it.data)
+                        emit(Resource.Success(data))
+                    }
+                    is ApiResponse.Empty -> {
+                        emit(Resource.Error<List<Popular>>("EMPTY"))
+                    }
+                    is ApiResponse.Error -> {
+                        emit(Resource.Error<List<Popular>>(it.errorMessage))
+                    }
+                }
+            }
+
         }
     }
 
