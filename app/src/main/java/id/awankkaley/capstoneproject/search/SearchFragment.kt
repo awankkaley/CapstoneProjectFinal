@@ -16,20 +16,27 @@ import id.awankkaley.capstoneproject.R
 import id.awankkaley.core.domain.model.Popular
 import id.awankkaley.core.ui.PopularAdapter
 import id.awankkaley.capstoneproject.databinding.FragmentSearchBinding
+import id.awankkaley.capstoneproject.detail.DetailViewModel
 import id.awankkaley.capstoneproject.util.gone
 import id.awankkaley.capstoneproject.util.visible
 import id.awankkaley.core.data.Resource
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.ObsoleteCoroutinesApi
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
-
+@ExperimentalCoroutinesApi
+@ObsoleteCoroutinesApi
+@FlowPreview
 class SearchFragment : Fragment() {
 
     private val homeViewModel: SearchViewModel by viewModel()
+    private val detailViewModel: DetailViewModel by sharedViewModel()
+
 
     private var _binding: FragmentSearchBinding? = null
     private val binding get() = _binding!!
@@ -43,16 +50,14 @@ class SearchFragment : Fragment() {
         return binding.root
     }
 
-    @ExperimentalCoroutinesApi
-    @FlowPreview
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if (activity != null) {
             val searchAdapter = PopularAdapter()
             searchAdapter.onItemClick = { it ->
-                val bundle = bundleOf("popular" to it)
-                view.findNavController().navigate(R.id.detailFragment, bundle)
+                detailViewModel.sendPopularForDetail(it)
+                view.findNavController().navigate(R.id.detailFragment)
             }
             viewLifecycleOwner.lifecycleScope.launch {
                 viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {

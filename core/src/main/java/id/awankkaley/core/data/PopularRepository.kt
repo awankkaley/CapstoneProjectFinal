@@ -58,7 +58,7 @@ class PopularRepository(
                 }
             }
 
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
 
