@@ -1,7 +1,6 @@
 package id.awankkaley.capstoneproject.search
 
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import id.awankkaley.core.domain.usecase.PopularUseCase
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -17,7 +16,7 @@ class SearchViewModel(popularUseCase: PopularUseCase) : ViewModel() {
     @ExperimentalCoroutinesApi
     @FlowPreview
     val searchResult = queryChannel.asFlow()
-        .debounce(300)
+        .debounce(500)
         .distinctUntilChanged()
         .filter {
             it.trim().isNotEmpty()
@@ -25,5 +24,4 @@ class SearchViewModel(popularUseCase: PopularUseCase) : ViewModel() {
         .flatMapLatest {
             popularUseCase.searchMovies(it)
         }
-        .asLiveData()
 }

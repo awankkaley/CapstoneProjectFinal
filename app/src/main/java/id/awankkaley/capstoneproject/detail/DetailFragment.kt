@@ -2,40 +2,43 @@ package id.awankkaley.capstoneproject.detail
 
 import android.annotation.SuppressLint
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import id.awankkaley.capstoneproject.R
 import id.awankkaley.core.domain.model.Popular
 import id.awankkaley.capstoneproject.databinding.FragmentDetailBinding
 import id.awankkaley.core.util.Util
 import id.awankkaley.capstoneproject.util.imageViewGlide
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 import org.jetbrains.anko.sdk27.coroutines.onClick
+import org.koin.android.viewmodel.ext.android.sharedViewModel
 import org.koin.android.viewmodel.ext.android.viewModel
 
-private const val ARG_PARAM1 = "popular"
-
+@ExperimentalCoroutinesApi
 class DetailFragment : Fragment() {
-    private val detailViewModel: DetailViewModel by viewModel()
+    private val detailViewModel: DetailViewModel by sharedViewModel()
     private var data: Popular? = null
     private var _binding: FragmentDetailBinding? = null
     private val binding get() = _binding!!
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            data = it.getParcelable(ARG_PARAM1)
-        }
+        data = detailViewModel.popularData.value
     }
 
     @SuppressLint("SetTextI18n")
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         _binding = FragmentDetailBinding.inflate(inflater, container, false)
         binding.imgDetail.imageViewGlide(data?.backdropPath)
         binding.tvDetailTitle.text = data?.title
@@ -45,14 +48,16 @@ class DetailFragment : Fragment() {
         binding.tvDetailRelease.text = Util.convertDate(data?.releaseDate)
 
         var statusFavorite = false
-
-        detailViewModel.isFavorite(data?.id.toString())
-            .observe(viewLifecycleOwner) { result ->
-                statusFavorite = true
-                setStatusFavorite(statusFavorite)
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                detailViewModel.isFavorite(data?.id.toString())
+                detailViewModel.uiState2.collect {
+                    statusFavorite = it
+                    setStatusFavorite(it)
+                }
             }
+        }
 
-        setStatusFavorite(statusFavorite)
         binding.btnFav.onClick {
             statusFavorite = !statusFavorite
             data?.let { it1 -> detailViewModel.setFavorite(it1, statusFavorite) }

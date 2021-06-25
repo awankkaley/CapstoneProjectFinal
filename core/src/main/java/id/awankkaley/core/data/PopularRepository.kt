@@ -1,6 +1,5 @@
 package id.awankkaley.core.data
 
-
 import android.util.Log
 import id.awankkaley.core.data.local.LocalDataSource
 import id.awankkaley.core.data.remote.RemoteDataSource
@@ -10,11 +9,9 @@ import id.awankkaley.core.domain.model.Popular
 import id.awankkaley.core.domain.repository.IPopularRepository
 import id.awankkaley.core.utils.AppExecutors
 import id.awankkaley.core.utils.DataMapper
-import kotlinx.coroutines.InternalCoroutinesApi
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.*
+import okhttp3.Dispatcher
 
 class PopularRepository(
     private val remoteDataSource: RemoteDataSource,
@@ -68,7 +65,7 @@ class PopularRepository(
     override fun getFavoritePopular(): Flow<List<Popular>> {
         return localDataSource.getFavoritePopular().map {
             DataMapper.mapEntitiesToDomain(it)
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
 
@@ -78,9 +75,11 @@ class PopularRepository(
             result.collect {
                 if (it != null) {
                     emit(true)
+                } else {
+                    emit(false)
                 }
             }
-        }
+        }.flowOn(Dispatchers.IO)
     }
 
     override fun setFavoritePopular(popular: Popular, state: Boolean) {

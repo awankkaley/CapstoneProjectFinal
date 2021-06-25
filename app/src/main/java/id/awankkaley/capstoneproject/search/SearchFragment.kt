@@ -7,7 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.SearchView
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import id.awankkaley.capstoneproject.R
@@ -20,6 +22,7 @@ import id.awankkaley.core.data.Resource
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import org.koin.android.viewmodel.ext.android.viewModel
 
@@ -51,25 +54,24 @@ class SearchFragment : Fragment() {
                 val bundle = bundleOf("popular" to it)
                 view.findNavController().navigate(R.id.detailFragment, bundle)
             }
-
-            homeViewModel.searchResult.observe(viewLifecycleOwner) { popular ->
-                if (popular != null) {
-                    when (popular) {
-                        is Resource.Loading -> {
-                            binding.tvEmptySearch.visible()
-                        }
-                        is Resource.Success -> {
-                            binding.tvEmptySearch.gone()
-                            searchAdapter.notifyDataSetChanged()
-                            searchAdapter.setData(popular.data)
-                        }
-                        is Resource.Error -> {
-                            binding.tvEmptySearch.visible()
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    homeViewModel.searchResult.collect { popular ->
+                        when (popular) {
+                            is Resource.Loading -> {
+                                binding.tvEmptySearch.visible()
+                            }
+                            is Resource.Success -> {
+                                binding.tvEmptySearch.gone()
+                                searchAdapter.notifyDataSetChanged()
+                                searchAdapter.setData(popular.data)
+                            }
+                            is Resource.Error -> {
+                                binding.tvEmptySearch.visible()
+                            }
                         }
                     }
                 }
-
-
             }
             with(binding.rvMovies)
             {

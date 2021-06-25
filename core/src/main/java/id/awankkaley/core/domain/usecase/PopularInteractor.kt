@@ -12,7 +12,7 @@ class PopularInteractor(private val iPopularRepository: IPopularRepository) : Po
 
     override fun searchMovies(query: String) = iPopularRepository.searchMovies(query)
 
-    override fun getFavoritePopular() = iPopularRepository.getFavoritePopular()
+    override  fun getFavoritePopular() = iPopularRepository.getFavoritePopular()
 
     override fun setFavoritePopular(popular: Popular, state: Boolean) =
         iPopularRepository.setFavoritePopular(popular, state)
